@@ -74,11 +74,13 @@ GEM
     docile (1.1.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.0.2)
     extlib (0.9.16)
     fastercsv (1.5.5)
     highline (1.7.6)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
+    httpclient (2.6.0.1)
     json (1.8.3)
     json_pure (1.8.2)
     mime-types (2.6.2)
@@ -90,6 +92,11 @@ GEM
     parser (2.2.2.6)
       ast (>= 1.1, < 3.0)
     powerpack (0.1.1)
+    pusher (0.14.6)
+      httpclient (~> 2.5)
+      multi_json (~> 1.0)
+      pusher-signature (~> 0.1.8)
+    pusher-signature (0.1.8)
     rack (1.6.4)
     rack-protection (1.5.3)
       rack
@@ -162,6 +169,8 @@ DEPENDENCIES
   data_mapper
   database_cleaner
   dm-postgres-adapter
+  dotenv
+  pusher
   rspec
   rspec-sinatra
   rubocop

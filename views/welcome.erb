@@ -1,3 +1,25 @@
+<script>
+  var pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>', { authEndpoint: '/auth' });
+  var channel = pusher.subscribe('presence-lobby');
+  channel.bind('pusher:subscription_succeeded', function(members) {
+    channel.members.each(function(member) {
+      $('#users_online').append('<div data-name="' + member.info.name + '">' + member.info.name + '<a href="#"> Challenge</a></div>')
+    })
+
+  })
+  channel.bind('pusher:member_added', function(member) {
+    $('#users_online').append('<div data-name="' + member.info.name + '">' + member.info.name + '<a href="#"> Challenge</a></div>')
+  })
+  channel.bind('pusher:member_removed', function(member) {
+    $('#users_online div[data-name="' + member.info.name + '"]').remove();
+  })
+
+
+</script>
+
+
+<div id="count"></div>
+<div id="users_online" style="border: 1px solid black; width: 300px; height: 600px"><h3>Lobby</h3></div>
 <div style="text-align: center; margin-top: 100px">
   <h2>Welcome, <b><%= current_user.name %></b>!</h2><br>
   <div>Lobby</div>

@@ -1,6 +1,14 @@
 require 'sinatra/base'
 require './data_mapper_setup'
 require 'sinatra/flash'
+require 'pusher'
+
+require 'dotenv'
+Dotenv.load
+
+Pusher.app_id = ENV['PUSHER_ID']
+Pusher.key = ENV['PUSHER_KEY']
+Pusher.secret = ENV['PUSHER_SECRET']
 
 class RPS < Sinatra::Base
   use Rack::MethodOverride
@@ -60,6 +68,17 @@ class RPS < Sinatra::Base
   delete '/sign_out' do
     session[:user_id] = nil
     redirect to('/sign_in')
+  end
+
+  post '/auth' do
+    response = Pusher[params[:channel_name]].authenticate(params[:socket_id], {
+      :user_id => current_user.id, # => required
+      :user_info => {
+        :name => current_user.name
+      }
+    })
+    content_type :json
+    response.to_json
   end
 
   get '/vs_computer' do

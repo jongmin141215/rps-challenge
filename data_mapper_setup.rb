@@ -7,6 +7,7 @@ DataMapper.setup(:default, "postgres://localhost/rps_#{env}")
 require './lib/game'
 require './lib/player'
 require './lib/user'
+require './lib/rps'
 
 DataMapper.finalize
 
