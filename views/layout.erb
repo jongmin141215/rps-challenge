@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RPS</title>
+  </head>
+  <body>
+    <nav>
+      <% if current_user %>
+        <form method="post" action="/sign_out">
+          <input type="hidden" name="_method" value="delete">
+          <input type="submit" value="Sign out">
+        </form>
+      <% else %>
+        <a href="/sign_in">Sign in</a>
+      <% end %>
+    </nav>
+    <%= yield %>
+  </body>
+</html>

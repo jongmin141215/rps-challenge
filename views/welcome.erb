@@ -1,6 +1,6 @@
 <div style="text-align: center; margin-top: 100px">
-  <h2>Thank you for signing up, <b><%= session[:username] %></b>!</h2><br>
-
+  <h2>Welcome, <b><%= current_user.name %></b>!</h2><br>
+  <div>Lobby</div>
   <a href="/vs_computer" style="text-decoration:none">
     Play with computer
   </a><br><br>
@@ -8,3 +8,4 @@
     Play with friends
   </a>
 </div>
+<%= @username %>

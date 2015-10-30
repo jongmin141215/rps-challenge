@@ -1,8 +1,17 @@
 require 'sinatra/base'
-require './lib/player'
+require './data_mapper_setup'
+require 'sinatra/flash'
 
 class RPS < Sinatra::Base
+  use Rack::MethodOverride
   enable :sessions
+  set :session_secret, 'secret'
+  register Sinatra::Flash
+  helpers do
+    def current_user
+      @current_user = User.get(session[:user_id])
+    end
+  end
   get '/' do
     erb :index
   end
@@ -13,19 +22,44 @@ class RPS < Sinatra::Base
 
   post '/sign_up' do
     redirect to('/no_name') if params[:username] == ''
-    session[:username] = params[:username]
-    redirect to('/welcome')
-  end
-
-  get '/no_name' do
-    erb :sign_up
+    user = User.new(name: params[:name],
+                    password: params[:password],
+                    password_confirmation: params[:password_confirmation])
+    if user.save
+      session[:user_id] = user.id
+      redirect to('/welcome')
+    elsif params[:password] != params[:password_confirmation]
+      flash.now[:alert] = 'Password and Confirmation do not match'
+      erb :sign_up
+    else
+      flash.now[:alert] = 'Name is already taken'
+      erb :sign_up
+    end
   end
 
   get '/welcome' do
-    unless session[:username_1]
-      session[:username_1] = session[:username]
-    end
+    current_user
     erb :welcome
+  end
+
+  get '/sign_in' do
+    erb :sign_in
+  end
+
+  post '/sign_in' do
+    user = User.authenticate(params[:name], params[:password])
+    if user
+      session[:user_id] = user.id
+      redirect to('/welcome')
+    else
+      flash.now[:alert] = 'invalid email or password'
+      erb :sign_in
+    end
+  end
+
+  delete '/sign_out' do
+    session[:user_id] = nil
+    redirect to('/sign_in')
   end
 
   get '/vs_computer' do

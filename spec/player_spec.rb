@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'player'
-
 describe Player do
   let(:player) { Player.new }
   it "can present scissors" do

@@ -1,4 +1,5 @@
 class Player
+  # RULES = asaaafafd
 
   def initialize
     @rps = [:rock, :scissors, :paper]
@@ -22,6 +23,8 @@ class Player
 
   def compare(a, b)
     return "Tie" if a == b
+    # return "You win" if b == a.value
+    # "You lose"
     if a == :rock
       return "You win" if b == :scissors
       return "You lose" if b == :paper
