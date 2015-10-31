@@ -1,17 +1,35 @@
 <script>
-  var pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>', { authEndpoint: '/auth' });
+  var pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>', { authEndpoint: '/auth' } );
   var channel = pusher.subscribe('presence-lobby');
   channel.bind('pusher:subscription_succeeded', function(members) {
     channel.members.each(function(member) {
-      $('#users_online').append('<div data-name="' + member.info.name + '">' + member.info.name + '<a href="#"> Challenge</a></div>')
+      $('#users_online').append('<div class="user" data-name="' + member.info.name + '">' + member.info.name + '<button type="button" class="challenge"> Challenge</button></div>')
     })
-
   })
   channel.bind('pusher:member_added', function(member) {
-    $('#users_online').append('<div data-name="' + member.info.name + '">' + member.info.name + '<a href="#"> Challenge</a></div>')
+    $('#users_online').append('<div class="user" data-name="' + member.info.name + '">' + member.info.name + '<button type="button" class="challenge"> Challenge</button></div>')
   })
   channel.bind('pusher:member_removed', function(member) {
     $('#users_online div[data-name="' + member.info.name + '"]').remove();
+  })
+
+  var challenge_channel = pusher.subscribe('<%= current_user.name %>_channel');
+  challenge_channel.bind('challenge', function(data) {
+    var response = confirm(data.challenger + ' challenged you. Do you want to accept the challenge?');
+    if (response) {
+      $.post('/accept_challenge', {challenger: data.challenger, challengee: data.challengee})
+    }
+  })
+
+  // var private_pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>', { authEndpoint: '/private_auth'} )
+  // var private_channel = private_pusher.subscribe('private-game');
+  // private_channel.bind('rps', function() {
+  //
+  // })
+  $(document).on('click', '.challenge', function() {
+    console.log('hi')
+    var challengee = $(this).parent().data('name')
+    $.post('/challenge', {challengee: challengee, challenger: '<%= current_user.name %>'})
   })
 
 

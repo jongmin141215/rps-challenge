@@ -85,6 +85,11 @@ class RPS < Sinatra::Base
     erb :vs_computer
   end
 
+  post '/challenge' do
+    user = User.first(name: params[:challengee])
+    Pusher.trigger("#{user.name}_channel", 'challenge', {challengee: params[:challengee], challenger: params[:challenger]})
+  end
+
   post '/vs_computer' do
     player = Player.new
     session[:rps] = params[:rps].to_sym

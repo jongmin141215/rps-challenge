@@ -1,43 +1,15 @@
 describe Player do
-  let(:player) { Player.new }
-  it "can present scissors" do
-    expect(subject.scissors).to eq(:scissors)
+  subject(:player) { described_class.new }
+
+  it 'can choose :rock' do
+    expect(player.choose(:rock)).to eq(:rock)
   end
 
-  it "can present rock" do
-    expect(subject.rock).to eq(:rock)
+  it 'can choose :scissors' do
+    expect(player.choose(:scissors)).to eq(:scissors)
   end
 
-  it "can randomly generate rps" do
-    allow(subject).to receive(:random_rps).and_return(:scissors)
-    expect(subject.random_rps).to eq(:scissors)
-  end
-
-  it "compares rock and scissors" do
-    expect(subject.compare(:rock, player.scissors)).to eq("You win")
-  end
-
-  it "compares rock and paper" do
-    expect(subject.compare(:rock, player.paper)).to eq("You lose")
-  end
-
-  it "compares scissors and rock" do
-    expect(subject.compare(:scissors, player.rock)).to eq("You lose")
-  end
-
-  it "compares scissors and paper" do
-    expect(subject.compare(:scissors, player.paper)).to eq("You win")
-  end
-
-  it "compares paper and rock" do
-    expect(subject.compare(:paper, player.rock)).to eq("You win")
-  end
-
-  it "compares paper and scissors" do
-    expect(subject.compare(:paper, player.scissors)).to eq("You lose")
-  end
-
-  it "reports tie when both present the same" do
-    expect(subject.compare(:paper, player.paper)).to eq("Tie")
+  it 'can choose :paper' do
+    expect(player.choose(:paper)).to eq(:paper)
   end
 end
