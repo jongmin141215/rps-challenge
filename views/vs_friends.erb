@@ -1,10 +1,28 @@
+<script>
+  $(function() {
+    var pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>');
+    var result_channel = pusher.subscribe('<%= current_user.name %>_result_channel');
+    result_channel.bind('result', function(data) {
+      window.location.href= 'http://localhost:9292/results?player1_choice=' + data.player1_choice + '&player2_choice=' + data.player2_choice + '&result=' + data.result 
+    })
+
+    $('#play').click(function(e) {
+      e.preventDefault();
+      $('#rps_form').hide();
+      $('#waiting_message').text('Waiting for your opponent\'s decision...')
+      var rps = $('input[type="radio"]:checked').val();
+      $.post('/vs_friends', {rps: rps})
+    })
+  })
+
+</script>
+
 <div style="text-align: center; margin-top: 100px">
 
-  <% if session[:username] && session[:username_1] %>
-    <h2><%= session[:username] %> vs. <%= session[:username_1] %></h2>
-  <% end %>
+    <h2><%= current_user.name %> vs. <%= session[:opponent] %></h2>
 
-  <form action="/vs_friends" id="rps_form" method="post">
+
     <%= erb :form_features %>
-  </form>
+
+  <div id="waiting_message"></div>
 </div>

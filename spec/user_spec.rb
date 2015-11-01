@@ -11,4 +11,16 @@ describe User do
   it 'does not authenticate when given an incorrect password' do
     expect(User.authenticate(user.name, 'hi')).to be_nil
   end
+
+  it 'can choose :rock' do
+    expect(user.choose(:rock)).to eq(:rock)
+  end
+
+  it 'can choose :scissors' do
+    expect(user.choose(:scissors)).to eq(:scissors)
+  end
+
+  it 'can choose :paper' do
+    expect(user.choose(:paper)).to eq(:paper)
+  end
 end

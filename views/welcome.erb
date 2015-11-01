@@ -20,6 +20,9 @@
       $.post('/accept_challenge', {challenger: data.challenger, challengee: data.challengee})
     }
   })
+  challenge_channel.bind('start_game', function(data) {
+    window.location.href = 'http://localhost:9292/vs_friends?game_id=' + data.game_id 
+  })
 
   // var private_pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>', { authEndpoint: '/private_auth'} )
   // var private_channel = private_pusher.subscribe('private-game');
@@ -27,7 +30,6 @@
   //
   // })
   $(document).on('click', '.challenge', function() {
-    console.log('hi')
     var challengee = $(this).parent().data('name')
     $.post('/challenge', {challengee: challengee, challenger: '<%= current_user.name %>'})
   })

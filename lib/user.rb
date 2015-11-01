@@ -20,4 +20,7 @@ class User
     user if (user && (BCrypt::Password.new(user.password_digest) == password))
   end
 
+  def choose(rps)
+    rps
+  end
 end
