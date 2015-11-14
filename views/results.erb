@@ -1,4 +1,6 @@
-
-Your Choice: <%= session[:your_choice] %>
-<%= session[:opponent] %>'s choice: <%= session[:opponent_choice] %>
-You <%= session[:result] %>
+<div id="result">
+  Your choice: <%= session[:your_choice] %><br>
+  <%= session[:opponent] %>'s choice: <%= session[:opponent_choice] %><br>
+  You <%= session[:result] %><br>
+  <a href="/welcome">Play again</a>
+</div>

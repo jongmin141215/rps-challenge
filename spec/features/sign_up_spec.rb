@@ -6,26 +6,26 @@ feature "Sign up" do
   end
 
   scenario "You can register your name" do
-    fill_in 'Name', with: 'Jongmin'
-    fill_in 'Password', with: 'password'
-    fill_in 'Confirmation', with: 'password'
+    fill_in 'name', with: 'Jongmin'
+    fill_in 'password', with: 'password'
+    fill_in 'password_confirmation', with: 'password'
     click_button 'Sign up'
     expect(page).to have_content 'Welcome, Jongmin!'
     expect(User.first.name).to eq('Jongmin')
   end
 
   scenario "It asks you to fill in the form if nothing is typed" do
-    fill_in("Name", with: "")
-    fill_in 'Password', with: 'password'
-    fill_in 'Confirmation', with: 'password'
+    fill_in "name", with: ""
+    fill_in 'password', with: 'password'
+    fill_in 'password_confirmation', with: 'password'
     click_button("Sign up")
     expect(current_path).to eq("/sign_up")
   end
 
   scenario 'requires a matching confirmation password' do
-    fill_in 'Name', with: 'Jongmin'
-    fill_in 'Password', with: 'password'
-    fill_in 'Confirmation', with: 'passw0rd'
+    fill_in 'name', with: 'Jongmin'
+    fill_in 'password', with: 'password'
+    fill_in 'password_confirmation', with: 'passw0rd'
     click_button 'Sign up'
     expect(current_path).to eq("/sign_up")
     expect(page).to have_content('Password and Confirmation do not match')
@@ -33,15 +33,15 @@ feature "Sign up" do
   end
 
   scenario 'cannot sign up with an existing email' do
-    fill_in 'Name', with: 'Jongmin'
-    fill_in 'Password', with: 'password'
-    fill_in 'Confirmation', with: 'password'
+    fill_in 'name', with: 'Jongmin'
+    fill_in 'password', with: 'password'
+    fill_in 'password_confirmation', with: 'password'
     click_button 'Sign up'
     # click_link "Sign out"
     visit "/sign_up"
-    fill_in 'Name', with: 'Jongmin'
-    fill_in 'Password', with: 'password'
-    fill_in 'Confirmation', with: 'password'
+    fill_in 'name', with: 'Jongmin'
+    fill_in 'password', with: 'password'
+    fill_in 'password_confirmation', with: 'password'
     click_button 'Sign up'
     expect(page).to have_content('Name is already taken')
   end

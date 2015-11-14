@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>RPS</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <script src="//js.pusher.com/3.0/pusher.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
   </head>
@@ -13,9 +14,16 @@
           <input type="submit" value="Sign out">
         </form>
       <% else %>
-        <a href="/sign_in">Sign in</a>
+      <form action="/sign_in" id="sign_in">
+        <input type="submit" value="Sign in">
+      </form>
+      <form action="/sign_up" id="sign_up">
+        <input type="submit" value="Register">
+      </form>
       <% end %>
     </nav>
+    <div id="body_div">
     <%= yield %>
+    </div>
   </body>
 </html>

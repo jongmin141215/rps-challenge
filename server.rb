@@ -2,6 +2,7 @@ require 'sinatra/base'
 require './data_mapper_setup'
 require 'sinatra/flash'
 require 'pusher'
+require './helpers/user_helpers'
 
 require 'dotenv'
 Dotenv.load
@@ -11,20 +12,12 @@ Pusher.key = ENV['PUSHER_KEY']
 Pusher.secret = ENV['PUSHER_SECRET']
 
 class RPS < Sinatra::Base
+  helpers UserHelpers
   use Rack::MethodOverride
   enable :sessions
   set :session_secret, 'secret'
   register Sinatra::Flash
-  helpers do
-    def current_user
-      @current_user = User.get(session[:user_id])
-    end
 
-    # def opponent
-    #   @opponent = session[:challengee] if current_user.name == session[:challenger]
-    #   @opponent = session[:challenger] if current_user.name == session[:challengee]
-    # end
-  end
   get '/' do
     erb :index
   end
@@ -34,7 +27,6 @@ class RPS < Sinatra::Base
   end
 
   post '/sign_up' do
-    redirect to('/no_name') if params[:username] == ''
     user = User.new(name: params[:name],
                     password: params[:password],
                     password_confirmation: params[:password_confirmation])
@@ -51,7 +43,6 @@ class RPS < Sinatra::Base
   end
 
   get '/welcome' do
-    current_user
     erb :welcome
   end
 
@@ -77,7 +68,7 @@ class RPS < Sinatra::Base
 
   post '/auth' do
     response = Pusher[params[:channel_name]].authenticate(params[:socket_id], {
-      :user_id => current_user.id, # => required
+      :user_id => current_user.id,
       :user_info => {
         :name => current_user.name
       }
@@ -86,8 +77,29 @@ class RPS < Sinatra::Base
     response.to_json
   end
 
+  post '/challenge_computer' do
+    game = Game.new(player1_id: current_user.id, player2_id: 0)
+    if game.save
+      session[:game_id] = game.id
+      redirect to('/vs_computer')
+    else
+      redirect to('/welcome')
+    end
+  end
+
   get '/vs_computer' do
     erb :vs_computer
+  end
+
+  post '/vs_computer' do
+    game = Game.get(session[:game_id])
+    game.player1_choice = current_user.choose(params[:rps].to_sym)
+    game.player2_choice = game.random_rps
+    session[:player1_choice] = game.player1_choice
+    session[:player2_choice] = game.player2_choice
+    game.save
+    session[:result] = game.compare(game.player1_choice.to_sym, game.player2_choice.to_sym)
+    redirect to('/results')
   end
 
   post '/challenge' do
@@ -103,22 +115,13 @@ class RPS < Sinatra::Base
     game = Game.new(player1_id: challenger.id, player2_id: challengee.id)
     opponent = session[:challengee] if current_user.name == session[:challenger]
     opponent = session[:challenger] if current_user.name == session[:challengee]
-    session[:opponent] = opponent
     if game.save
       session[:game_id] = game.id
-      Pusher.trigger("#{challenger.name}_channel", 'start_game', {game_id: game.id})
-      Pusher.trigger("#{challengee.name}_channel", 'start_game', {game_id: game.id})
+      Pusher.trigger("#{challenger.name}_channel", 'start_game', {game_id: game.id, opponent: opponent })
+      Pusher.trigger("#{challengee.name}_channel", 'start_game', {game_id: game.id, opponent: opponent })
     else
       redirect to('/welcome')
-      console.log('not accepted?')
     end
-  end
-
-  post '/vs_computer' do
-
-    # session[:rps] = params[:rps].to_sym
-    # session[:result] = player.compare(session[:rps], player.random_rps)
-    # redirect to('/result')
   end
 
   get "/vs_friends" do
@@ -137,26 +140,18 @@ class RPS < Sinatra::Base
     end
     game.save
     if game.player1_choice && game.player2_choice
-      p game.player1_choice
-      p game.player2_choice
-      p game.compare(game.player1_choice.to_sym, game.player2_choice.to_sym)
-      p game.compare(game.player2_choice.to_sym, game.player1_choice.to_sym)
       Pusher.trigger("#{player1.name}_result_channel", 'result', {player1_choice: game.player1_choice, player2_choice: game.player2_choice, result: game.compare(game.player1_choice.to_sym, game.player2_choice.to_sym)})
       Pusher.trigger("#{player2.name}_result_channel", 'result', {player1_choice: game.player1_choice, player2_choice: game.player2_choice, result: game.compare(game.player2_choice.to_sym, game.player1_choice.to_sym)})
     end
-  end
-
-  get '/play_again' do
-
   end
 
   get '/results' do
     game = Game.get(session[:game_id])
     if current_user.id == game.player1_id
       opponent = User.get(game.player2_id)
-      session[:opponent] = opponent.name
-      session[:your_choice] = params[:player1_choice]
-      session[:opponent_choice] = params[:player2_choice]
+      session[:opponent] = opponent ? opponent.name : 'Computer'
+      session[:your_choice] = params[:player1_choice] || session[:player1_choice]
+      session[:opponent_choice] = params[:player2_choice] || session[:player2_choice]
     else
       opponent = User.get(game.player1_id)
       session[:opponent] = opponent.name
@@ -164,7 +159,7 @@ class RPS < Sinatra::Base
       session[:opponent_choice] = params[:player1_choice]
     end
 
-    session[:result] = params[:result]
+    session[:result] = params[:result] || session[:result]
     erb :results
   end
 

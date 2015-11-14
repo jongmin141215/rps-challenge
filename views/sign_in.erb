@@ -1,13 +1,17 @@
 <div style="text-align: center; margin-top: 100px">
   <%= flash[:alert] if flash %>
-  <h2>Sign in</h2><br><br>
+  <h2>Sign in</h2><br>
   <form action="/sign_in" method="post" id="sign_in">
-    <label for="name">Name:
-      <input type="text" name="name" autofocus><br>
-    </label>
-    <label for="password">Password:
-      <input type="password" name="password" autofocus><br>
-    </label>
+    <table>
+      <tr>
+        <td><label for="name">Name:</label></td>
+        <td><input type="text" name="name" autofocus></td>
+      </tr>
+      <tr>
+        <td><label for="password">Password:</label></td>
+        <td><input type="password" name="password" autofocus></td>
+      </tr>
+    </table>
     <input type="submit" value="Log in">
   </form>
 </div>

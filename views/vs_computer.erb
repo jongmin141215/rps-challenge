@@ -1,7 +1,11 @@
 <div style="text-align: center; margin-top: 100px">
-  <h2><%= session[:username] %> vs. Computer</h2>
+  <h2><%= current_user.name %> vs. Computer</h2>
 
   <form action="/vs_computer" id="rps_form" method="post">
-    <%= erb :form_features %>
+    <input type="radio" name="rps" id="rock" value="rock" checked>Rock
+    <input type="radio" name="rps" id="paper" value="paper">Paper
+    <input type="radio" name="rps" id="scissors" value="scissors">Scissors
+    <br><br>
+    <input type="submit" id="play" value="Play">
   </form>
 </div>
