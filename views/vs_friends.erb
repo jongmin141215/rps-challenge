@@ -3,7 +3,7 @@
     var pusher = new Pusher('<%= ENV['PUSHER_KEY'] %>');
     var result_channel = pusher.subscribe('<%= current_user.name %>_result_channel');
     result_channel.bind('result', function(data) {
-      window.location.href= 'http://localhost:9292/results?player1_choice=' + data.player1_choice + '&player2_choice=' + data.player2_choice + '&result=' + data.result
+      window.location.href= 'https://rock--paper--scissors.herokuapp.com/results?player1_choice=' + data.player1_choice + '&player2_choice=' + data.player2_choice + '&result=' + data.result
     })
 
     $('#play').click(function(e) {

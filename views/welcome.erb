@@ -27,7 +27,7 @@
       }
     })
     challenge_channel.bind('start_game', function(data) {
-      window.location.href = 'http://localhost:9292/vs_friends?game_id=' + data.game_id + '&opponent=' + data.opponenet
+      window.location.href = 'https://rock--paper--scissors.herokuapp.com/vs_friends?game_id=' + data.game_id + '&opponent=' + data.opponenet
     })
     $(document).on('click', '.challenge', function() {
       var challengee = $(this).parent().data('name')
