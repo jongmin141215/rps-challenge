@@ -1,11 +1,8 @@
 # RPS Challenge
 
-
-![Image of Homepage](homepage.png)
-
-
 This is a basic two-player rock-scissors-paper game using Pusher. You can play the game on two different computers with your friends. If you're by yourself, you can also play with computer. More fun with your friend though!  
 
+![Image of Homepage](homepage.png)
 
 Demo
 ----
