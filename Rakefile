@@ -8,6 +8,7 @@
 # task default: [:cop, :spec, :cuke]
 
 require 'data_mapper'
+require './data_mapper_setup'
 require './server.rb'
 
 namespace :db do
