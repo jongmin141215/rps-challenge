@@ -8,7 +8,7 @@
 # task default: [:cop, :spec, :cuke]
 
 require 'data_mapper'
-require './app/app.rb'
+require './server.rb'
 
 namespace :db do
   desc "Non destructive upgrade"
