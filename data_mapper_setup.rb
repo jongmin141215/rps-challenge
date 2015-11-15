@@ -1,8 +1,11 @@
 require 'data_mapper'
 
-env = ENV['RACK_ENV'] || 'development'
-
-DataMapper.setup(:default, "postgres://localhost/rps_#{env}")
+if ENV['RACK_ENV'] = 'production'
+  DataMapper.setup(:default, ENV['DATABASE_URL'])
+else
+  env = ENV['RACK_ENV'] || 'development'
+  DataMapper.setup(:default, "postgres://localhost/rps_#{env}")
+end
 
 require './lib/game'
 require './lib/user'
