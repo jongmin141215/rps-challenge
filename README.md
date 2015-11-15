@@ -12,11 +12,11 @@ Demo
 Visit https://rock--paper--scissors.herokuapp.com/
 
 Use the username and password below if you don't want to sign up.
-Player 1
+* Player 1
 name: Alice
 password: password
 
-Player 2
+* Player 2
 name: Bob
 password: password
 
